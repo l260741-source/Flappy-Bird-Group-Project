@@ -1,3 +1,4 @@
+
 #include <SFML/Graphics.hpp>
 #include <optional>
 #include <cstdlib>
@@ -11,6 +12,19 @@ int main()
     window.setFramerateLimit(60);
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+    // LOAD FONT
+    sf::Font font;
+
+    if (!font.openFromFile("C:/Windows/Fonts/arial.ttf"))
+    {
+        return -1;
+    }
+
+    // GAME STATES
+    bool startMenu = true;
+    bool gameOver = false;
+    bool paused = false;
 
     // BIRD BODY
     sf::CircleShape bird(22);
@@ -86,9 +100,254 @@ int main()
     int score = 0;
     bool scored = false;
 
-    // GAME STATES
-    bool gameOver = false;
-    bool paused = false;
+    // MENU BACKGROUND
+    sf::RectangleShape menuBackground;
+    menuBackground.setSize({800, 600});
+    menuBackground.setFillColor(sf::Color(30, 150, 190));
+
+    // MENU SUN
+    sf::CircleShape menuSun(65);
+    menuSun.setPosition({600, 35});
+    menuSun.setFillColor(sf::Color(255, 225, 90));
+
+    // CLOUD 1
+    sf::CircleShape cloud1a(35);
+    cloud1a.setPosition({70, 90});
+    cloud1a.setFillColor(sf::Color::White);
+
+    sf::CircleShape cloud1b(45);
+    cloud1b.setPosition({105, 65});
+    cloud1b.setFillColor(sf::Color::White);
+
+    sf::CircleShape cloud1c(35);
+    cloud1c.setPosition({150, 90});
+    cloud1c.setFillColor(sf::Color::White);
+
+    sf::RectangleShape cloud1base;
+    cloud1base.setSize({110, 40});
+    cloud1base.setPosition({85, 105});
+    cloud1base.setFillColor(sf::Color::White);
+
+    // CLOUD 2
+    sf::CircleShape cloud2a(30);
+    cloud2a.setPosition({570, 175});
+    cloud2a.setFillColor(sf::Color::White);
+
+    sf::CircleShape cloud2b(42);
+    cloud2b.setPosition({610, 150});
+    cloud2b.setFillColor(sf::Color::White);
+
+    sf::CircleShape cloud2c(32);
+    cloud2c.setPosition({655, 180});
+    cloud2c.setFillColor(sf::Color::White);
+
+    sf::RectangleShape cloud2base;
+    cloud2base.setSize({115, 35});
+    cloud2base.setPosition({590, 190});
+    cloud2base.setFillColor(sf::Color::White);
+
+    // LEFT TREE
+    sf::RectangleShape treeTrunk1;
+    treeTrunk1.setSize({18, 70});
+    treeTrunk1.setPosition({100, 385});
+    treeTrunk1.setFillColor(sf::Color(120, 75, 35));
+
+    sf::ConvexShape tree1(3);
+    tree1.setPoint(0, {0, 120});
+    tree1.setPoint(1, {65, 0});
+    tree1.setPoint(2, {130, 120});
+    tree1.setPosition({45, 270});
+    tree1.setFillColor(sf::Color(20, 145, 115));
+
+    sf::ConvexShape tree1top(3);
+    tree1top.setPoint(0, {0, 90});
+    tree1top.setPoint(1, {50, 0});
+    tree1top.setPoint(2, {100, 90});
+    tree1top.setPosition({60, 240});
+    tree1top.setFillColor(sf::Color(35, 185, 140));
+
+    // MIDDLE TREE
+    sf::RectangleShape treeTrunk2;
+    treeTrunk2.setSize({18, 80});
+    treeTrunk2.setPosition({665, 375});
+    treeTrunk2.setFillColor(sf::Color(120, 75, 35));
+
+    sf::ConvexShape tree2(3);
+    tree2.setPoint(0, {0, 130});
+    tree2.setPoint(1, {75, 0});
+    tree2.setPoint(2, {150, 130});
+    tree2.setPosition({590, 250});
+    tree2.setFillColor(sf::Color(20, 145, 115));
+
+    sf::ConvexShape tree2top(3);
+    tree2top.setPoint(0, {0, 95});
+    tree2top.setPoint(1, {55, 0});
+    tree2top.setPoint(2, {110, 95});
+    tree2top.setPosition({610, 220});
+    tree2top.setFillColor(sf::Color(35, 185, 140));
+
+    // RIGHT TREE
+    sf::RectangleShape treeTrunk3;
+    treeTrunk3.setSize({15, 65});
+    treeTrunk3.setPosition({735, 390});
+    treeTrunk3.setFillColor(sf::Color(120, 75, 35));
+
+    sf::ConvexShape tree3(3);
+    tree3.setPoint(0, {0, 110});
+    tree3.setPoint(1, {60, 0});
+    tree3.setPoint(2, {120, 110});
+    tree3.setPosition({680, 285});
+    tree3.setFillColor(sf::Color(30, 165, 125));
+
+    // SNOW HILLS
+    sf::CircleShape snowHill1(230);
+    snowHill1.setScale({2.0f, 0.55f});
+    snowHill1.setPosition({-120, 390});
+    snowHill1.setFillColor(sf::Color(245, 250, 255));
+
+    sf::CircleShape snowHill2(230);
+    snowHill2.setScale({2.0f, 0.55f});
+    snowHill2.setPosition({330, 405});
+    snowHill2.setFillColor(sf::Color(225, 240, 250));
+
+    // GAME CLOUDS
+    sf::CircleShape gameCloud1a(25);
+    gameCloud1a.setPosition({90, 65});
+    gameCloud1a.setFillColor(sf::Color(245, 250, 255));
+
+    sf::CircleShape gameCloud1b(35);
+    gameCloud1b.setPosition({120, 45});
+    gameCloud1b.setFillColor(sf::Color(245, 250, 255));
+
+    sf::CircleShape gameCloud1c(25);
+    gameCloud1c.setPosition({155, 65});
+    gameCloud1c.setFillColor(sf::Color(245, 250, 255));
+
+    sf::RectangleShape gameCloud1base;
+    gameCloud1base.setSize({80, 25});
+    gameCloud1base.setPosition({110, 75});
+    gameCloud1base.setFillColor(sf::Color(245, 250, 255));
+
+    sf::CircleShape gameCloud2a(22);
+    gameCloud2a.setPosition({470, 145});
+    gameCloud2a.setFillColor(sf::Color(245, 250, 255));
+
+    sf::CircleShape gameCloud2b(32);
+    gameCloud2b.setPosition({500, 125});
+    gameCloud2b.setFillColor(sf::Color(245, 250, 255));
+
+    sf::CircleShape gameCloud2c(22);
+    gameCloud2c.setPosition({535, 145});
+    gameCloud2c.setFillColor(sf::Color(245, 250, 255));
+
+    sf::RectangleShape gameCloud2base;
+    gameCloud2base.setSize({85, 25});
+    gameCloud2base.setPosition({490, 155});
+    gameCloud2base.setFillColor(sf::Color(245, 250, 255));
+
+    sf::CircleShape gameCloud3a(20);
+    gameCloud3a.setPosition({680, 65});
+    gameCloud3a.setFillColor(sf::Color(245, 250, 255));
+
+    sf::CircleShape gameCloud3b(30);
+    gameCloud3b.setPosition({710, 45});
+    gameCloud3b.setFillColor(sf::Color(245, 250, 255));
+
+    sf::CircleShape gameCloud3c(20);
+    gameCloud3c.setPosition({745, 65});
+    gameCloud3c.setFillColor(sf::Color(245, 250, 255));
+
+    sf::RectangleShape gameCloud3base;
+    gameCloud3base.setSize({80, 25});
+    gameCloud3base.setPosition({700, 75});
+    gameCloud3base.setFillColor(sf::Color(245, 250, 255));
+
+    // MENU TITLE
+    sf::Text menuTitle(font, "FLAPPY BIRD", 58);
+    menuTitle.setFillColor(sf::Color(255, 220, 40));
+    menuTitle.setOutlineThickness(4);
+    menuTitle.setOutlineColor(sf::Color(90, 35, 25));
+    menuTitle.setPosition({190, 35});
+
+    sf::Text menuSubtitle(font, "READY TO FLY?", 20);
+    menuSubtitle.setFillColor(sf::Color::White);
+    menuSubtitle.setOutlineThickness(1);
+    menuSubtitle.setOutlineColor(sf::Color(30, 70, 100));
+    menuSubtitle.setPosition({315, 120});
+
+    // PLAY BUTTON
+    sf::RectangleShape playButtonShadow;
+    playButtonShadow.setSize({220, 75});
+    playButtonShadow.setPosition({290, 285});
+    playButtonShadow.setFillColor(sf::Color(160, 55, 20));
+
+    sf::RectangleShape playButton;
+    playButton.setSize({220, 75});
+    playButton.setPosition({290, 275});
+    playButton.setFillColor(sf::Color(255, 175, 25));
+    playButton.setOutlineThickness(5);
+    playButton.setOutlineColor(sf::Color(220, 65, 35));
+
+    sf::Text playText(font, "PLAY", 42);
+    playText.setFillColor(sf::Color::White);
+    playText.setOutlineThickness(2);
+    playText.setOutlineColor(sf::Color(100, 35, 25));
+    playText.setPosition({355, 285});
+
+    sf::Text spaceText(font, "PRESS SPACE TO START", 19);
+    spaceText.setFillColor(sf::Color::White);
+    spaceText.setOutlineThickness(1);
+    spaceText.setOutlineColor(sf::Color(30, 70, 100));
+    spaceText.setPosition({285, 380});
+
+    // END MENU BACKGROUND
+    sf::RectangleShape endBackground;
+    endBackground.setSize({800, 600});
+    endBackground.setFillColor(sf::Color(30, 150, 190));
+
+    // END MENU PANEL
+    sf::RectangleShape menuPanel;
+    menuPanel.setSize({460, 370});
+    menuPanel.setPosition({170, 110});
+    menuPanel.setFillColor(sf::Color(35, 55, 130));
+    menuPanel.setOutlineThickness(5);
+    menuPanel.setOutlineColor(sf::Color(70, 220, 255));
+
+    // END MENU BUTTON
+    sf::RectangleShape restartButton;
+    restartButton.setSize({300, 60});
+    restartButton.setPosition({250, 320});
+    restartButton.setFillColor(sf::Color(255, 175, 25));
+    restartButton.setOutlineThickness(4);
+    restartButton.setOutlineColor(sf::Color(220, 65, 35));
+
+    // END MENU TEXT
+    sf::Text endTitle(font, "GAME OVER!", 48);
+    endTitle.setFillColor(sf::Color(255, 100, 100));
+    endTitle.setOutlineThickness(2);
+    endTitle.setOutlineColor(sf::Color::White);
+    endTitle.setPosition({265, 150});
+
+    sf::Text finalScore(font, "YOUR SCORE: 0", 35);
+    finalScore.setFillColor(sf::Color(255, 220, 30));
+    finalScore.setPosition({285, 245});
+
+    sf::Text restartMessage(font, "PLAY AGAIN - PRESS R", 22);
+    restartMessage.setFillColor(sf::Color::White);
+    restartMessage.setPosition({280, 330});
+
+    sf::Text exitMessage(font, "PRESS X TO EXIT", 20);
+    exitMessage.setFillColor(sf::Color(100, 240, 255));
+    exitMessage.setPosition({320, 410});
+
+    // PAUSE TEXT
+    sf::Text pauseTitle(font, "PAUSED", 48);
+    pauseTitle.setFillColor(sf::Color(255, 220, 30));
+    pauseTitle.setPosition({300, 190});
+
+    sf::Text pauseMessage(font, "PRESS P TO RESUME", 23);
+    pauseMessage.setFillColor(sf::Color::White);
+    pauseMessage.setPosition({285, 300});
 
     // GAME LOOP
     while (window.isOpen())
@@ -96,37 +355,41 @@ int main()
         float deltaTime = clock.restart().asSeconds();
 
         if (deltaTime > 0.1f)
-        {
             deltaTime = 0.1f;
-        }
 
         // EVENTS
         while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
-            {
                 window.close();
-            }
 
             if (const auto* key = event->getIf<sf::Event::KeyPressed>())
             {
                 // EXIT
                 if (key->code == sf::Keyboard::Key::X)
-                {
                     window.close();
+
+                // START GAME
+                if (key->code == sf::Keyboard::Key::Space && startMenu)
+                {
+                    startMenu = false;
+                    velocity = -350;
+                    clock.restart();
                 }
 
                 // JUMP
-                if (key->code == sf::Keyboard::Key::Space
-                    && !gameOver && !paused)
+                else if (key->code == sf::Keyboard::Key::Space
+                    && !gameOver && !paused && !startMenu)
                 {
                     velocity = -350;
                 }
 
                 // PAUSE AND RESUME
-                if (key->code == sf::Keyboard::Key::P && !gameOver)
+                if (key->code == sf::Keyboard::Key::P
+                    && !gameOver && !startMenu)
                 {
                     paused = !paused;
+                    clock.restart();
                 }
 
                 // RESTART
@@ -144,12 +407,14 @@ int main()
 
                     gameOver = false;
                     paused = false;
+
+                    clock.restart();
                 }
             }
         }
 
         // GAME MOVEMENT
-        if (!gameOver && !paused)
+        if (!gameOver && !paused && !startMenu)
         {
             // GRAVITY
             velocity += gravity * deltaTime;
@@ -200,9 +465,7 @@ int main()
             if (pipeX + pipeWidth + 20 < 0)
             {
                 pipeX = 850;
-
                 gapY = 170 + std::rand() % 220;
-
                 scored = false;
             }
 
@@ -234,6 +497,7 @@ int main()
             if (hitPipe || hitGround || hitCeiling)
             {
                 gameOver = true;
+                finalScore.setString("YOUR SCORE: " + std::to_string(score));
             }
         }
 
@@ -248,51 +512,143 @@ int main()
 
         // WINDOW TITLE
         if (gameOver)
-        {
-            window.setTitle(
-                "GAME OVER | Score: " +
-                std::to_string(score) +
-                " | Press R to Restart"
-            );
-        }
+            window.setTitle("GAME OVER");
         else if (paused)
-        {
-            window.setTitle(
-                "PAUSED | Score: " +
-                std::to_string(score) +
-                " | Press P to Resume"
-            );
-        }
+            window.setTitle("PAUSED");
+        else if (startMenu)
+            window.setTitle("Flappy Bird - Start Menu");
         else
-        {
-            window.setTitle(
-                "Flappy Bird | Score: " +
-                std::to_string(score) +
-                " | Press P to Pause"
-            );
-        }
+            window.setTitle("Flappy Bird | Score: " + std::to_string(score));
 
         // DRAW BACKGROUND
         window.clear(sf::Color(100, 180, 255));
 
-        // DRAW PIPES
-        window.draw(topPipe);
-        window.draw(topLight);
-        window.draw(topCap);
+        // START MENU
+        if (startMenu)
+        {
+            window.draw(menuBackground);
+            window.draw(menuSun);
 
-        window.draw(bottomPipe);
-        window.draw(bottomLight);
-        window.draw(bottomCap);
+            window.draw(cloud1a);
+            window.draw(cloud1b);
+            window.draw(cloud1c);
+            window.draw(cloud1base);
 
-        // DRAW GROUND
-        window.draw(ground);
+            window.draw(cloud2a);
+            window.draw(cloud2b);
+            window.draw(cloud2c);
+            window.draw(cloud2base);
 
-        // DRAW BIRD
-        window.draw(bird);
-        window.draw(wing);
-        window.draw(eye);
-        window.draw(pupil);
-        window.draw(beak);
+            window.draw(tree1);
+            window.draw(tree1top);
+            window.draw(treeTrunk1);
+
+            window.draw(tree2);
+            window.draw(tree2top);
+            window.draw(treeTrunk2);
+
+            window.draw(tree3);
+            window.draw(treeTrunk3);
+
+            window.draw(snowHill1);
+            window.draw(snowHill2);
+
+            window.draw(menuTitle);
+            window.draw(menuSubtitle);
+
+            window.draw(playButtonShadow);
+            window.draw(playButton);
+            window.draw(playText);
+
+            window.draw(spaceText);
+        }
+
+        // END MENU
+        else if (gameOver)
+        {
+            window.draw(endBackground);
+            window.draw(menuSun);
+
+            window.draw(cloud1a);
+            window.draw(cloud1b);
+            window.draw(cloud1c);
+            window.draw(cloud1base);
+
+            window.draw(cloud2a);
+            window.draw(cloud2b);
+            window.draw(cloud2c);
+            window.draw(cloud2base);
+
+            window.draw(tree1);
+            window.draw(tree1top);
+            window.draw(treeTrunk1);
+
+            window.draw(tree2);
+            window.draw(tree2top);
+            window.draw(treeTrunk2);
+
+            window.draw(tree3);
+            window.draw(treeTrunk3);
+
+            window.draw(snowHill1);
+            window.draw(snowHill2);
+
+            window.draw(menuPanel);
+            window.draw(endTitle);
+            window.draw(finalScore);
+
+            window.draw(restartButton);
+            window.draw(restartMessage);
+            window.draw(exitMessage);
+        }
+
+        // GAME SCREEN
+        else
+        {
+            // GAME CLOUDS
+            window.draw(gameCloud1a);
+            window.draw(gameCloud1b);
+            window.draw(gameCloud1c);
+            window.draw(gameCloud1base);
+
+            window.draw(gameCloud2a);
+            window.draw(gameCloud2b);
+            window.draw(gameCloud2c);
+            window.draw(gameCloud2base);
+
+            window.draw(gameCloud3a);
+            window.draw(gameCloud3b);
+            window.draw(gameCloud3c);
+            window.draw(gameCloud3base);
+
+            // PIPES
+            window.draw(topPipe);
+            window.draw(topLight);
+            window.draw(topCap);
+
+            window.draw(bottomPipe);
+            window.draw(bottomLight);
+            window.draw(bottomCap);
+
+            // GROUND
+            window.draw(ground);
+
+            // BIRD
+            window.draw(bird);
+            window.draw(wing);
+            window.draw(eye);
+            window.draw(pupil);
+            window.draw(beak);
+
+            // PAUSE MESSAGE
+            if (paused)
+            {
+                window.draw(menuBackground);
+                window.draw(menuPanel);
+                window.draw(pauseTitle);
+                window.draw(pauseMessage);
+            }
+        }
 
         window.display();
     }
